@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
 class CustomLogin extends Component
@@ -17,7 +18,7 @@ class CustomLogin extends Component
         \Log::info('Login method triggered');
         logger('Login called with:', ['username' => $this->userName]);
 
-       $baseUrl = config('services.api.base_url');
+        $baseUrl = config('services.api.base_url');
 
 
         $response = Http::post("{$baseUrl}/auth/login", [
@@ -30,8 +31,13 @@ class CustomLogin extends Component
 
             $token = $this->apiResult['result']['token'] ?? null;
 
+
             if ($token) {
                 session(['api_token' => $token]);
+
+                // Cache user data for 60 minutes
+                Cache::put('api_token', $token, now()->addMinutes(60));
+                Cache::put('logged_in_user', $this->apiResult['result'], now()->addMinutes(60));
                 return redirect()->route('admin.home');
             } else {
                 $this->error = 'Login succeeded, but token is missing.';
