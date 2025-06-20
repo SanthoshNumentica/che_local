@@ -114,4 +114,32 @@ class UserController extends Controller
 
         return view('admin.users-request', compact('requests', 'pagination', 'debugInfo'));
     }
+    public function updateUserRequest(Request $request, $id)
+{
+    $token = Cache::get('api_token');
+
+    if (!$token) {
+        return response()->json(['message' => 'Session expired. Please login again.'], 401);
+    }
+
+    $status = $request->input('status');
+
+    if (!in_array($status, ['APPROVED', 'REJECTED'])) {
+        return response()->json(['message' => 'Invalid status'], 400);
+    }
+
+    $response = Http::withHeaders([
+        'Authorization' => "Bearer {$token}",
+        'Accept' => 'application/json',
+    ])->patch("http://che.inheritinitiative.org/api/v1/auth/updateUserRequest/{$id}", [
+        'status' => $status,
+    ]);
+
+    if ($response->failed()) {
+        return response()->json(['message' => 'Failed to update user request.'], $response->status());
+    }
+
+    return response()->json(['message' => 'User request updated successfully.']);
+}
+
 }

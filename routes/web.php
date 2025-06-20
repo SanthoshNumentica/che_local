@@ -29,4 +29,9 @@ Route::get('/admin/report', function () {
     return view('report');
 })->name('admin.report');
 
-
+Route::post('/logout', function () {
+    session()->forget('user');
+    session()->invalidate();
+    session()->regenerateToken();
+    return redirect('/admin/login'); // Or your preferred redirect
+})->name('logout');
