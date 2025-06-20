@@ -1,25 +1,32 @@
 <?php
-
+use App\Http\Controllers\UserController;
 use App\Livewire\CustomLogin;
 use Illuminate\Support\Facades\Route;
 
+// Admin Login
 Route::get('admin/login', CustomLogin::class);
+
+// Home Page
 Route::get('/home', function () {
     return view('home');
 })->name('admin.home');
 
-Route::get('/users', function () {
-    return view('users');
-})->name('admin.users');
+// Users - Moved entirely to controller handling
+Route::get('/admin/users', [UserController::class, 'showUsers'])->name('admin.users');
+Route::get('/admin/users/requests', [UserController::class, 'showUserRequests'])->name('admin.users.requests');
+Route::get('/admin/users/view/{id}', [UserController::class, 'viewUser'])->name('admin.users.view');
 
-Route::get('/master-data', function () {
+// Static views (if you want to keep these)
+Route::get('/admin/master-data', function () {
     return view('master');
 })->name('admin.master');
 
-Route::get('/map-maker', function () {
+Route::get('/admin/map-maker', function () {
     return view('map');
 })->name('admin.map');
 
-Route::get('/report', function () {
+Route::get('/admin/report', function () {
     return view('report');
 })->name('admin.report');
+
+
