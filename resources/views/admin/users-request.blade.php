@@ -32,7 +32,7 @@
                 <td class="px-4 py-2 border-b">{{ $user['address'] ?? '-' }}</td>
                 <td class="px-4 py-2 border-b">
                     <span class="px-2 py-1 rounded text-xs font-semibold 
-                                    {{ $user['status'] === 'ACTIVE' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-800' }}">
+                                    {{ $user['status'] === 'APPROVED' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-800' }}">
                         {{ $user['status'] }}
                     </span>
                 </td>
@@ -73,7 +73,7 @@
 </div>
 @endif
 
-{{-- Modal: User Info --}}
+{{-- 🔥 Modal With Approve & Reject Buttons --}}
 <div id="userModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-60 flex items-center justify-center">
     <div class="bg-white rounded-2xl shadow-lg w-full max-w-2xl p-8 relative text-black animate-fadeIn">
         <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-red-600 text-2xl">&times;</button>
@@ -115,30 +115,23 @@
         </div>
 
         <div class="flex justify-end gap-4 border-t pt-4">
-            <button onclick="handleStatusUpdatePrompt('APPROVED')" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold">APPROVE</button>
-            <button onclick="handleStatusUpdatePrompt('REJECTED')" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-semibold">REJECT</button>
+            <button onclick="handleApprove()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                APPROVE
+            </button>
+            <button onclick="handleReject()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                REJECT
+            </button>
         </div>
     </div>
 </div>
 
-{{-- Modal: Confirmation --}}
-<div id="confirmModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 flex items-center justify-center">
-    <div class="bg-white p-6 rounded-lg shadow-lg text-center max-w-sm w-full text-black animate-fadeIn">
-        <p id="confirmText" class="mb-4 text-lg font-medium">Are you sure?</p>
-        <div class="flex justify-center gap-4">
-            <button onclick="proceedStatusUpdate()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Yes</button>
-            <button onclick="closeConfirmModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-900 px-4 py-2 rounded">Cancel</button>
-        </div>
-    </div>
-</div>
-
-{{-- JS --}}
+{{-- ✨ Scripts --}}
 <script>
     let selectedUser = null;
-    let selectedAction = null;
 
     function openModal(user) {
         selectedUser = user;
+
         document.getElementById('modalFirstName').innerText = user.firstName || '-';
         document.getElementById('modalLastName').innerText = user.lastName || '-';
         document.getElementById('modalEmail').innerText = user.emailId || '-';
@@ -157,45 +150,49 @@
         document.getElementById('userModal').classList.add('hidden');
     }
 
-    function handleStatusUpdatePrompt(status) {
-        selectedAction = status;
-        document.getElementById('confirmText').innerText = `Are you sure you want to ${status.toLowerCase()} this user?`;
-        document.getElementById('confirmModal').classList.remove('hidden');
-    }
+    function handleApprove() {
+        if (!selectedUser || !selectedUser.id) {
+            alert("User ID not found.");
+            return;
+        }
 
-    function closeConfirmModal() {
-        document.getElementById('confirmModal').classList.add('hidden');
-    }
+        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-    async function proceedStatusUpdate() {
-        if (!selectedUser || !selectedUser.id || !selectedAction) return;
-
-        try {
-            const response = await fetch(`/admin/user-request/${selectedUser.id}`, {
+        fetch(`/admin/users/approve/${selectedUser.id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'X-CSRF-TOKEN': token,
+                    'Accept': 'application/json',
                 },
                 body: JSON.stringify({
-                    status: selectedAction
+                    status: 'APPROVED'
                 })
+            })
+            console.error('error', err)
+            .then(response => {
+                if (!response.ok) throw new Error("Approval failed");
+                return response.json();
+            })
+            .then(data => {
+                alert(`User ${selectedUser.firstName} approved successfully!`);
+                window.location.reload(); // Optionally reload or remove row
+            })
+            .catch(error => {
+                alert('Failed to approve user. Please try again.');
+                console.error(error);
             });
 
-            const data = await response.json();
-            if (response.ok) {
-                alert(data.message || `User ${selectedAction.toLowerCase()} successfully.`);
-                location.reload();
-            } else {
-                alert(data.message || `Failed to ${selectedAction.toLowerCase()} user.`);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Unexpected error occurred.');
-        }
+        closeModal();
+    }
+
+    function handleReject() {
+        alert(`Rejected request for: ${selectedUser.firstName} ${selectedUser.lastName}`);
+        closeModal();
     }
 </script>
 
+{{-- Optional: fadeIn animation if you use Tailwind’s animation plugin --}}
 <style>
     .animate-fadeIn {
         animation: fadeIn 0.25s ease-in-out;

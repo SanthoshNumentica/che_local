@@ -20,11 +20,12 @@ class UserController extends Controller
 
         $page = $request->input('page', 1);
         $limit = $request->input('limit', 10);
+        $baseUrl = config('services.api.base_url');
 
         $response = Http::withHeaders([
             'Authorization' => "Bearer {$token}",
             'Accept' => 'application/json',
-        ])->get('http://che.inheritinitiative.org/api/v1/auth/userList', [
+        ])->get("{$baseUrl}/auth/userList", [
             'page' => $page,
             'limit' => $limit,
         ]);
@@ -64,11 +65,12 @@ class UserController extends Controller
         if (!$token) {
             return redirect()->route('login')->with('error', 'Session expired. Please login again.');
         }
+        $baseUrl = config('services.api.base_url');
 
         $response = Http::withHeaders([
             'Authorization' => "Bearer {$token}",
             'Accept' => 'application/json',
-        ])->get("http://che.inheritinitiative.org/api/v1/auth/user/{$id}");
+        ])->get("{$baseUrl}/auth/user/{$id}");
 
         if ($response->failed()) {
             return back()->with('error', 'Could not fetch user details.');
@@ -89,11 +91,12 @@ class UserController extends Controller
 
         $page = $request->input('page', 1);
         $limit = $request->input('limit', 10);
+        $baseUrl = config('services.api.base_url');
 
         $response = Http::withHeaders([
             'Authorization' => "Bearer {$token}",
             'Accept' => 'application/json',
-        ])->get('http://che.inheritinitiative.org/api/v1/auth/requestList', [
+        ])->get("{$baseUrl}/auth/requestList", [
             'page' => $page,
             'limit' => $limit,
         ]);
@@ -114,32 +117,27 @@ class UserController extends Controller
 
         return view('admin.users-request', compact('requests', 'pagination', 'debugInfo'));
     }
-    public function updateUserRequest(Request $request, $id)
-{
-    $token = Cache::get('api_token');
+    public function approveUser($id)
+    {
+        $token = Cache::get('api_token');
 
-    if (!$token) {
-        return response()->json(['message' => 'Session expired. Please login again.'], 401);
+        if (!$token) {
+            return redirect()->route('login')->with('error', 'Session expired. Please login again.');
+        }
+        $baseUrl = config('services.api.base_url');
+
+        $response = Http::withHeaders([
+            'Authorization' => "Bearer {$token}",
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+        ])->patch("{$baseUrl}/auth/updateUserRequest/{$id}", [
+            'status' => 'APPROVED',
+        ]);
+        if ($response->failed()) {
+            Log::error('User approval failed', ['response' => $response->body()]);
+            return back()->with('error', 'User approval failed.');
+        }
+
+        return redirect()->route('users.requests')->with('success', 'User approved successfully.');
     }
-
-    $status = $request->input('status');
-
-    if (!in_array($status, ['APPROVED', 'REJECTED'])) {
-        return response()->json(['message' => 'Invalid status'], 400);
-    }
-
-    $response = Http::withHeaders([
-        'Authorization' => "Bearer {$token}",
-        'Accept' => 'application/json',
-    ])->patch("http://che.inheritinitiative.org/api/v1/auth/updateUserRequest/{$id}", [
-        'status' => $status,
-    ]);
-
-    if ($response->failed()) {
-        return response()->json(['message' => 'Failed to update user request.'], $response->status());
-    }
-
-    return response()->json(['message' => 'User request updated successfully.']);
-}
-
 }
