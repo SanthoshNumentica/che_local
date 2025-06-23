@@ -3,7 +3,8 @@
 @section('title', 'Users')
 
 @section('content')
-    <h1 class="text-xl font-bold mb-4">Manage Users</h1>
+    <h1 class="text-xl font-medium mb-4">Users</h1>
+    <h1 class="text-xl font-medium mb-4">Users</h1>
 
     @if (isset($users) && is_array($users) && count($users) > 0)
         <div class="overflow-x-auto rounded shadow">
@@ -11,8 +12,7 @@
                 <thead class="bg-gray-200">
                     <tr>
                         <th class="px-4 py-2 border-b">S/No</th>
-                        <th class="px-4 py-2 border-b">First Name</th>
-                        <th class="px-4 py-2 border-b">Last Name</th>
+                        <th class="px-4 py-2 border-b">Name</th>
                         <th class="px-4 py-2 border-b">Username</th>
                         <th class="px-4 py-2 border-b">Email</th>
                         <th class="px-4 py-2 border-b">Mobile</th>
@@ -25,13 +25,12 @@
                     @foreach ($users as $index => $user)
                         <tr class="hover:bg-gray-50">
                             <td class="px-4 py-2 border-b">{{ $index + 1 }}</td>
-                            <td class="px-4 py-2 border-b">{{ $user['firstName'] ?? '-' }}</td>
-                            <td class="px-4 py-2 border-b">{{ $user['lastName'] ?? '-' }}</td>
+                            <td class="px-4 py-2 border-b">{{ ($user['firstName'] ?? '') .' '. ($user['lastName'] ?? '') ?? '-' }}</td>
                             <td class="px-4 py-2 border-b">{{ $user['userName'] ?? '-' }}</td>
                             <td class="px-4 py-2 border-b">{{ $user['userName'] ?? '-' }}</td>
                             <td class="px-4 py-2 border-b">{{ $user['mobileNo'] ?? '-' }}</td>
                             <td class="px-4 py-2 border-b">
-                                {{ isset($user['lastLoginDate']) ? \Carbon\Carbon::parse($user['lastLoginDate'])->format('d M Y, h:i A') : '-' }}
+                                {{ isset($user['lastLoginDate']) ? \Carbon\Carbon::parse($user['lastLoginDate'])->format('d M Y') : '-' }}
                             </td>
                             <td class="px-4 py-2 border-b">
                                 <span class="px-2 py-1 rounded text-xs font-semibold 

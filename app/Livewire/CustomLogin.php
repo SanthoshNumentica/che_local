@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Laravel\Pail\ValueObjects\Origin\Console;
 
 class CustomLogin extends Component
 {
@@ -43,7 +44,8 @@ class CustomLogin extends Component
                 $this->error = 'Login succeeded, but token is missing.';
             }
         } else {
-            $this->error = 'Login failed: ' . ($response->json('message') ?? 'Unknown error.');
+            $message = $response->json('message');
+            $this->error = 'Login failed: ' . (is_array($message) ? implode(', ', $message) : ($message ?? 'Unknown error.'));
         }
     }
 
