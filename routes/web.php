@@ -23,6 +23,7 @@ Route::post('/logout', function () {
 Route::get('/admin/users', [UserController::class, 'showUsers'])->name('admin.users');
 Route::get('/admin/users/requests', [UserController::class, 'showUserRequests'])->name('admin.users.requests');
 Route::get('/admin/users/view/{id}', [UserController::class, 'viewUser'])->name('admin.users.view');
+Route::get('/admin/users/view/{id}', [UserController::class, 'viewUser'])->name('admin.users.view');
 Route::patch('/admin/users/approve/{id}', [UserController::class, 'approveUser'])->name('admin.users.approve');
 
 // Static views (if you want to keep these)
@@ -37,3 +38,10 @@ Route::get('/admin/map-maker', function () {
 Route::get('/admin/report', function () {
     return view('report');
 })->name('admin.report');
+
+Route::post('/logout', function () {
+    session()->forget('user');
+    session()->invalidate();
+    session()->regenerateToken();
+    return redirect('/admin/login'); // Or your preferred redirect
+})->name('logout');
