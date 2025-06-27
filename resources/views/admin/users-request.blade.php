@@ -159,17 +159,17 @@
         const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
         fetch(`/admin/users/approve/${selectedUser.id}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': token,
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify({
-                    status: 'APPROVED'
-                })
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': token,
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({
+                status: 'APPROVED'
             })
-            console.error('error', err)
+        })
+        console.error('error', err)
             .then(response => {
                 if (!response.ok) throw new Error("Approval failed");
                 return response.json();

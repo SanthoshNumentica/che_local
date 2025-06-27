@@ -58,10 +58,11 @@
                 </div>
             </div>
 
-            <a href="{{ route('admin.master') }}"
-                class="flex items-center gap-2 px-4 py-2 transition {{ $currentRoute === 'admin.master' ? $activeColor : $defaultColor }}">
+            <a href="{{ route('admin.master-data') }}"
+                class="flex items-center gap-2 px-4 py-2 transition {{ $currentRoute === 'admin.master-data' ? $activeColor : $defaultColor }}">
                 <img src="{{ asset('images/header/master_data-icon.png') }}" class="w-5 h-5"> Master Data
             </a>
+
 
             <a href="{{ route('admin.map') }}"
                 class="flex items-center gap-2 px-4 py-2 transition {{ $currentRoute === 'admin.map' ? $activeColor : $defaultColor }}">
@@ -84,12 +85,14 @@
     <main class="flex-1 p-4 bg-white rounded-md m-2 ml-0">
         <!-- Header -->
         <div class="flex items-center justify-between mb-6 border-b border-gray-200 pb-4">
+            @if ($currentRoute !== 'admin.home')
             <button onclick="history.back()" class="flex items-center space-x-2 text-[#7A2B26] hover:text-[#5A1D1A] font-medium">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
                 </svg>
                 <span>Back</span>
             </button>
+            @endif
 
             <div class="flex-1 px-4">
                 <div class="max-w-md mx-auto relative">
@@ -177,120 +180,121 @@
             </div>
         </div>
     </div>
-    <style>
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .animate-fadeIn {
-            animation: fadeIn 0.3s ease-out forwards;
-        }
-    </style>
-
-    <script>
-        const apiToken = "{{ Cache::get('api_token') }}";
-
-        async function fetchUserProfile() {
-            try {
-                const response = await fetch("https://che.inheritinitiative.org/api/v1/auth/userList?page=1&limit=10", {
-                    headers: {
-                        'Authorization': `Bearer ${apiToken}`,
-                        'Accept': 'application/json',
-                    }
-                });
-
-                const data = await response.json();
-                const user = data?.result?.data?.[0];
-
-                if (!user) {
-                    alert("No user found.");
-                    return;
-                }
-
-                // Inject into modal
-                document.getElementById("modalFirstName").textContent = user.firstName || '-';
-                document.getElementById("modalLastName").textContent = user.lastName || '-';
-                document.getElementById("modalEmail").textContent = user.userName || '-';
-                document.getElementById("modalMobile").textContent = user.mobileNo || '-';
-                document.getElementById("modalLastLogin").textContent = user.lastLoginDate ?
-                    new Date(user.lastLoginDate).toLocaleString() :
-                    'Never';
-                const statusEl = document.getElementById("modalStatus");
-                statusEl.textContent = user.status || '-';
-
-                // Add color based on status
-                if (user.status === "ACTIVE") {
-                    statusEl.classList.add("text-green-600");
-                    statusEl.classList.remove("text-gray-900");
-                } else {
-                    statusEl.classList.add("text-gray-600");
-                    statusEl.classList.remove("text-green-600");
-                }
-                document.getElementById("modalCreatedAt").textContent = new Date(user.createdAt).toLocaleString();
-
-                // Show modal
-                document.getElementById("userModal").classList.remove("hidden");
-            } catch (error) {
-                console.error("API Error:", error);
-                alert("Failed to load user profile.");
-            }
-        }
-
-        function closeModal() {
-            document.getElementById("userModal").classList.add("hidden");
-        }
-
-        // Bind click on profile image
-        document.addEventListener("DOMContentLoaded", () => {
-            const profileIcon = document.querySelector('img[alt="Profile"]');
-            if (profileIcon) {
-                profileIcon.addEventListener("click", fetchUserProfile);
-            }
-        });
-    </script>
-
-
-    <script>
-        function toggleDropdown(contentId, iconId) {
-            const content = document.getElementById(contentId);
-            const icon = document.getElementById(iconId);
-            icon.classList.toggle('rotate-180');
-            if (content.classList.contains('hidden')) {
-                content.classList.remove('hidden');
-                content.style.maxHeight = content.scrollHeight + "px";
-                content.style.opacity = "1";
-            } else {
-                content.style.maxHeight = "0";
-                content.style.opacity = "0";
-                content.addEventListener('transitionend', () => {
-                    content.classList.add('hidden');
-                }, {
-                    once: true
-                });
-            }
-        }
-
-
-        document.getElementById('viewProfile').addEventListener('click', function(e) {
-            e.preventDefault();
-            fetchUserProfile();
-        });
-    </script>
-
-    <style>
-        html,
-        body {
-            height: 100%;
-        }
-    </style>
 </body>
 
+
 </html>
+<style>
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    .animate-fadeIn {
+        animation: fadeIn 0.3s ease-out forwards;
+    }
+</style>
+
+<script>
+    const apiToken = "{{ Cache::get('api_token') }}";
+
+    async function fetchUserProfile() {
+        try {
+            const response = await fetch("https://che.inheritinitiative.org/api/v1/auth/userList?page=1&limit=10", {
+                headers: {
+                    'Authorization': `Bearer ${apiToken}`,
+                    'Accept': 'application/json',
+                }
+            });
+
+            const data = await response.json();
+            const user = data?.result?.data?.[0];
+
+            if (!user) {
+                alert("No user found.");
+                return;
+            }
+
+            // Inject into modal
+            document.getElementById("modalFirstName").textContent = user.firstName || '-';
+            document.getElementById("modalLastName").textContent = user.lastName || '-';
+            document.getElementById("modalEmail").textContent = user.userName || '-';
+            document.getElementById("modalMobile").textContent = user.mobileNo || '-';
+            document.getElementById("modalLastLogin").textContent = user.lastLoginDate ?
+                new Date(user.lastLoginDate).toLocaleString() :
+                'Never';
+            const statusEl = document.getElementById("modalStatus");
+            statusEl.textContent = user.status || '-';
+
+            // Add color based on status
+            if (user.status === "ACTIVE") {
+                statusEl.classList.add("text-green-600");
+                statusEl.classList.remove("text-gray-900");
+            } else {
+                statusEl.classList.add("text-gray-600");
+                statusEl.classList.remove("text-green-600");
+            }
+            document.getElementById("modalCreatedAt").textContent = new Date(user.createdAt).toLocaleString();
+
+            // Show modal
+            document.getElementById("userModal").classList.remove("hidden");
+        } catch (error) {
+            console.error("API Error:", error);
+            alert("Failed to load user profile.");
+        }
+    }
+
+    function closeModal() {
+        document.getElementById("userModal").classList.add("hidden");
+    }
+
+    // Bind click on profile image
+    document.addEventListener("DOMContentLoaded", () => {
+        const profileIcon = document.querySelector('img[alt="Profile"]');
+        if (profileIcon) {
+            profileIcon.addEventListener("click", fetchUserProfile);
+        }
+    });
+</script>
+
+
+<script>
+    function toggleDropdown(contentId, iconId) {
+        const content = document.getElementById(contentId);
+        const icon = document.getElementById(iconId);
+        icon.classList.toggle('rotate-180');
+        if (content.classList.contains('hidden')) {
+            content.classList.remove('hidden');
+            content.style.maxHeight = content.scrollHeight + "px";
+            content.style.opacity = "1";
+        } else {
+            content.style.maxHeight = "0";
+            content.style.opacity = "0";
+            content.addEventListener('transitionend', () => {
+                content.classList.add('hidden');
+            }, {
+                once: true
+            });
+        }
+    }
+
+
+    document.getElementById('viewProfile').addEventListener('click', function(e) {
+        e.preventDefault();
+        fetchUserProfile();
+    });
+</script>
+
+<style>
+    html,
+    body {
+        height: 100%;
+    }
+</style>
