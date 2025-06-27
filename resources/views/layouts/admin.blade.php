@@ -5,10 +5,12 @@
     <meta charset="UTF-8">
     <title>@yield('title', 'Admin')</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="{{ asset('css/tailwind/tailwind.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
-<body class="flex text-black" style="background: radial-gradient(circle at center,  #000000, #7A2B26);">
+<body class="flex text-black h-screen" style="background: radial-gradient(circle at center,  #000000, #7A2B26);">
 
     @php
     $currentRoute = request()->route()->getName();
@@ -17,7 +19,7 @@
     @endphp
 
     <!-- Sidebar -->
-    <aside class="w-64 bg-white rounded-md flex flex-col m-2 p-4">
+    <aside class="w-1/4 bg-white rounded-md flex flex-col m-2 p-4">
         <!-- Logo -->
         <div class="flex items-center mb-8">
             <img src="{{ asset('images/test_logo.jpg') }}" alt="Logo" class="h-10 w-auto mx-auto">
@@ -97,7 +99,7 @@
 
     </aside>
 
-    <main class="flex-1 p-4 bg-white rounded-md m-2 ml-0">
+    <main class="w-3/4 flex flex-col p-4 bg-white rounded-md m-2 ml-0">
 
         <!-- Header Bar -->
         <div class="flex items-center justify-between mb-6 border-b border-gray-200 pb-4">
@@ -153,12 +155,24 @@
         </div>
 
         <!-- Page Content -->
-        <div class="overflow-y-auto pr-2">
+        <div class="overflow-y-auto pr-2 flex-1 custom-scrollbar">
             @yield('content')
         </div>
 
     </main>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script type="text/javascript">
+        @if(session('success'))
+        toastr.success(@json(session('success')));
+        @endif
+
+        @if(session('error'))
+        toastr.error(@json(session('error')));
+        @endif
+    </script>
 
 </body>
 
@@ -190,7 +204,46 @@
     }
 </script>
 <style>
-    html, body {
+    html,
+    body {
         height: 100%;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-button {
+        display: none;
+        /* Removes top & bottom arrows */
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background-color: #5A1D1A;
+    }
+
+    /* Firefox */
+    .custom-scrollbar {
+        scrollbar-width: thin;
+        scrollbar-color: #6D4C41  #ffffff;
+    }
+
+    /* Custom Toastr Success */
+    .toast-success {
+        background-color: #2E7D32 !important;
+        color: #fff !important;
+        font-weight: medium;
+        border-left: 6px solid #1B5E20 !important;
+    }
+
+    /* Custom Toastr Error */
+    .toast-error {
+        background-color: #BF360C !important;
+        color: #fff !important;
+        font-weight: medium;
+        border-left: 6px solid #A42F0A !important;
+    }
+
+
+    /* Common toast styling */
+    #toast-container>div {
+        border-radius: 8px;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
     }
 </style>

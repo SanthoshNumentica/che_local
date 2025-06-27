@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .form-input-theme {
+    @apply w-full border-0 border-b border-gray-400 focus:border-[#7A2B26] focus:ring-0 rounded-none px-3 py-2 mt-1 bg-[#F5F5F5] dark:bg-[#2E1B1A] text-black dark:text-white;
+  }
+}
