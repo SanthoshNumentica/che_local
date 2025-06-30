@@ -7,55 +7,33 @@
 
     <!-- Navigation Tabs -->
     <div class="flex space-x-4 mb-6">
-        <a href="{{ route('admin.master-data', ['type' => 'growth']) }}"
-            class="px-6 py-2 border-b-4 {{ $type === 'growth' ? 'border-[#7A2B26] text-[#7A2B26] font-semibold' : 'border-transparent text-gray-600 hover:text-[#7A2B26]' }}">
-            Growth Categories
-        </a>
-
-        <a href="{{ route('admin.master-data', ['type' => 'project']) }}"
-            class="px-6 py-2 border-b-4 {{ $type === 'project' ? 'border-[#7A2B26] text-[#7A2B26] font-semibold' : 'border-transparent text-gray-600 hover:text-[#7A2B26]' }}">
-            Project Categories
-        </a>
-
-        <a href="{{ route('admin.master-data', ['type' => 'stories']) }}"
-            class="px-6 py-2 border-b-4 {{ $type === 'stories' ? 'border-[#7A2B26] text-[#7A2B26] font-semibold' : 'border-transparent text-gray-600 hover:text-[#7A2B26]' }}">
-            Stories Categories
-        </a>
-
-        <a href="{{ route('admin.master-data', ['type' => 'training']) }}"
-            class="px-6 py-2 border-b-4 {{ $type === 'training' ? 'border-[#7A2B26] text-[#7A2B26] font-semibold' : 'border-transparent text-gray-600 hover:text-[#7A2B26]' }}">
-            Training Categories
-        </a>
+        @foreach (['growth', 'project', 'stories', 'training'] as $tab)
+            <a href="{{ route('admin.master-data', ['type' => $tab]) }}"
+                class="px-6 py-2 border-b-4 {{ $type === $tab ? 'border-[#7A2B26] text-[#7A2B26] font-semibold' : 'border-transparent text-gray-600 hover:text-[#7A2B26]' }}">
+                {{ ucfirst($tab) }} Categories
+            </a>
+        @endforeach
     </div>
 
-    <!-- Conditional Tabs -->
-    @if ($type === 'growth')
-        @include('partials._category_table', [
-            'title' => 'Growth Categories',
-            'data' => $categories
-        ])  
-    @endif
+    <!-- Table Partial -->
+    @php
+        $tableData = match($type) {
+            'growth' => $categories,
+            'project' => $projectCategories,
+            'stories' => $storiesCategories,
+            'training' => $trainingCategories,
+            default => []
+        };
+        $title = ucfirst($type) . ' Categories';
+    @endphp
 
-    @if ($type === 'project')
-        @include('partials._category_table', [
-            'title' => 'Project Categories',
-            'data' => $projectCategories
-        ])
-    @endif
-
-    @if ($type === 'stories')
-        @include('partials._category_table', [
-            'title' => 'Stories Categories',
-            'data' => $storiesCategories
-        ])
-    @endif
-
-    @if ($type === 'training')
-        @include('partials._category_table', [
-            'title' => 'Training Categories',
-            'data' => $trainingCategories
-        ])
-    @endif
+    @include('partials._category_table', [
+        'title' => $title,
+        'data' => $tableData,
+        'meta' => $meta,
+        'type' => $type,
+        'limit' => $limit,
+    ])
 
 </div>
 @endsection

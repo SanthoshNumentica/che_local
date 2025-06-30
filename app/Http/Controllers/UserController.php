@@ -9,6 +9,12 @@ use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
+    protected $baseUrl;
+
+    public function __construct()
+    {
+        $this->baseUrl = config('services.api.base_url');
+    }
     public function showUsers(Request $request)
     {
         $token = Cache::get('api_token');
@@ -20,12 +26,11 @@ class UserController extends Controller
 
         $page = $request->input('page', 1);
         $limit = $request->input('limit', 10);
-        $baseUrl = config('services.api.base_url');
 
         $response = Http::withHeaders([
             'Authorization' => "Bearer {$token}",
             'Accept' => 'application/json',
-        ])->get("{$baseUrl}/auth/userList", [
+        ])->get("{$this->baseUrl}/auth/userList", [
             'page' => $page,
             'limit' => $limit,
         ]);
@@ -66,12 +71,11 @@ class UserController extends Controller
         if (!$token) {
             return redirect()->route('login')->with('error', 'Session expired. Please login again.');
         }
-        $baseUrl = config('services.api.base_url');
 
         $response = Http::withHeaders([
             'Authorization' => "Bearer {$token}",
             'Accept' => 'application/json',
-        ])->get("{$baseUrl}/auth/user/{$id}");
+        ])->get("{$this->baseUrl}/auth/user/{$id}");
 
         if ($response->failed()) {
             return back()->with('error', 'Could not fetch user details.');
@@ -92,12 +96,11 @@ class UserController extends Controller
 
         $page = $request->input('page', 1);
         $limit = $request->input('limit', 10);
-        $baseUrl = config('services.api.base_url');
 
         $response = Http::withHeaders([
             'Authorization' => "Bearer {$token}",
             'Accept' => 'application/json',
-        ])->get("{$baseUrl}/auth/requestList", [
+        ])->get("{$this->baseUrl}/auth/requestList", [
             'page' => $page,
             'limit' => $limit,
         ]);
@@ -139,7 +142,6 @@ class UserController extends Controller
         if (!$token) {
             return redirect()->route('login')->with('error', 'Session expired. Please login again.');
         }
-        $baseUrl = config('services.api.base_url');
 
         $payload = [
             'firstName'        => $request->input('first_name'),
@@ -162,7 +164,7 @@ class UserController extends Controller
             'Authorization' => "Bearer {$token}",
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
-        ])->post("{$baseUrl}/auth/createAccount", $payload);
+        ])->post("{$this->baseUrl}/auth/createAccount", $payload);
         if ($response->failed()) {
             Log::error('User save failed', ['payload' => $payload, 'response' => $response->body(),]);
 
@@ -188,14 +190,13 @@ class UserController extends Controller
         if (!$token) {
             return redirect()->route('login')->with('error', 'Session expired. Please login again.');
         }
-        $baseUrl = config('services.api.base_url');
         $status = $request->input('status');
 
         $response = Http::withHeaders([
             'Authorization' => "Bearer {$token}",
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
-        ])->patch("{$baseUrl}/auth/updateUserRequest/{$id}", [
+        ])->patch("{$this->baseUrl}/auth/updateUserRequest/{$id}", [
             'status' => $status,
         ]);
         if ($response->failed()) {
@@ -218,40 +219,39 @@ class UserController extends Controller
     }
 
     public function getUserData(Request $request)
-{
-    $token = Cache::get('api_token');
+    {
+        $token = Cache::get('api_token');
 
-    if (!$token) {
-        return response()->json([
-            'error' => 'Session expired. Please login again.'
-        ], 401);
+        if (!$token) {
+            return response()->json([
+                'error' => 'Session expired. Please login again.'
+            ], 401);
+        }
+
+        $page = $request->input('page', 1);
+        $limit = $request->input('limit', 10);
+
+
+        $response = Http::withHeaders([
+            'Authorization' => "Bearer {$token}",
+            'Accept' => 'application/json',
+        ])->get("{$this->baseUrl}/auth/userList", [
+            'page' => $page,
+            'limit' => $limit,
+        ]);
+
+        if ($response->unauthorized()) {
+            return response()->json([
+                'error' => 'Unauthorized. Please login again.'
+            ], 401);
+        }
+
+        if ($response->failed()) {
+            return response()->json([
+                'error' => 'Failed to fetch user data.'
+            ], $response->status());
+        }
+
+        return response()->json($response->json());
     }
-
-    $page = $request->input('page', 1);
-    $limit = $request->input('limit', 10);
-    $baseUrl = 'https://che.inheritinitiative.org/api/v1'; // Direct external API as per your request
-
-    $response = Http::withHeaders([
-        'Authorization' => "Bearer {$token}",
-        'Accept' => 'application/json',
-    ])->get("{$baseUrl}/auth/userList", [
-        'page' => $page,
-        'limit' => $limit,
-    ]);
-
-    if ($response->unauthorized()) {
-        return response()->json([
-            'error' => 'Unauthorized. Please login again.'
-        ], 401);
-    }
-
-    if ($response->failed()) {
-        return response()->json([
-            'error' => 'Failed to fetch user data.'
-        ], $response->status());
-    }
-
-    return response()->json($response->json());
-}
-
 }
