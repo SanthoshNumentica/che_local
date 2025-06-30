@@ -7,3 +7,6 @@
     <h1 class="text-2xl font-bold">Welcome to the Admin Dashboard</h1>
     <p class="mt-2">You have access to users, master data, and more.</p>
 @endsection
+<footer class="fixed bottom-0 right-0 mb-2 mr-4 text-sm text-gray-500 italic z-50">
+    Developed by @ITOI Technologies
+</footer>

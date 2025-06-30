@@ -97,6 +97,10 @@
         </tbody>
     </table>
 </div>
+<footer class="fixed bottom-0 right-0 mb-2 mr-4 text-sm text-gray-500 italic z-50">
+    Developed by @ITOI Technologies
+</footer>
+
 @else
 <p class="text-sm text-red-500">No {{ strtolower($title) }} found.</p>
 @endif

@@ -37,8 +37,8 @@ class CustomLogin extends Component
                 session(['api_token' => $token]);
 
                 // Cache user data for 60 minutes
-                Cache::put('api_token', $token, now()->addMinutes(60));
-                Cache::put('logged_in_user', $this->apiResult['result'], now()->addMinutes(60));
+                Cache::put('api_token', $token, now()->addMinutes(960)); // 12 hours
+                Cache::put('logged_in_user', $this->apiResult['result'], now()->addMinutes(960)); // 12 hours
                 return redirect()->route('admin.home');
             } else {
                 $this->error = 'Login succeeded, but token is missing.';
