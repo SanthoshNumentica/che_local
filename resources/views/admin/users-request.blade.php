@@ -325,30 +325,9 @@ use Illuminate\Support\Str;
             btn.classList.add('opacity-60', 'cursor-not-allowed');
         });
 
-        fetch(`/admin/users/approve/${selectedUser.id}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': token,
-                'Accept': 'application/json',
-            },
-            body: JSON.stringify({
-                status: 'APPROVED'
-            })
-        })
-        console.error('error', err)
-            .then(response => {
-                if (!response.ok) throw new Error("Approval failed");
-                return response.json();
-            })
-            .then(data => {
-                alert(`User ${selectedUser.firstName} approved successfully!`);
-                window.location.reload(); // Optionally reload or remove row
-            })
-            .catch(error => {
-                alert('Failed to approve user. Please try again.');
-                console.error(error);
-            });
+        // Show loader and update text
+        const spinner = button.querySelector('svg');
+        const textSpan = button.querySelector('span');
 
         if (spinner) spinner.classList.remove('hidden');
         if (textSpan) textSpan.textContent = statusValue === 'APPROVED' ? 'Approving...' : 'Rejecting...';
