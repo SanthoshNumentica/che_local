@@ -42,6 +42,7 @@ class UserController extends Controller
 
         $users = $response->json('result.data') ?? [];
         $pagination = $response->json('result.meta') ?? [];
+        $pagination['perPage'] = $limit;
 
         $debugInfo = [
             'token' => $token,
@@ -90,7 +91,7 @@ class UserController extends Controller
         }
 
         $page = $request->input('page', 1);
-        $limit = $request->input('limit', 5);
+        $limit = $request->input('limit', 10);
         $baseUrl = config('services.api.base_url');
 
         $response = Http::withHeaders([
@@ -199,7 +200,13 @@ class UserController extends Controller
         ]);
         if ($response->failed()) {
             Log::error('User approval failed', ['response' => $response->body()]);
-            return back()->with('error', 'User approval failed.');
+            $errorData = $response->json();
+            if (isset($errorData['message'])) {
+                $errorMessage = $errorData['message'];
+            } elseif (isset($errorData['error'])) {
+                $errorMessage = $errorData['error'];
+            }
+            return redirect()->route('admin.users.requests')->with('error', $errorMessage);
         }
 
         // Determine the success message based on status

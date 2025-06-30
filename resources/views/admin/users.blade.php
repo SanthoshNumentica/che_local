@@ -6,7 +6,7 @@
 <div class="flex items-center justify-between mb-4">
     <h1 class="text-[25px] font-medium mb-4">Users</h1>
     <div class="flex">
-        <div class="w-32 text-center text-sm rounded font-medium text-[#5e1f1b] mb-2 p-2 mr-4 bg-white border border-[#7A2B26] flex items-center justify-center gap-1 cursor-pointer hover:bg-[#f3eae9] hover:border-[#5e1f1b] transition-colors duration-200">
+        <div onclick="location.reload()" class="w-32 text-center text-sm rounded font-medium text-[#5e1f1b] mb-2 p-2 mr-4 bg-white border border-[#7A2B26] flex items-center justify-center gap-1 cursor-pointer hover:bg-[#f3eae9] hover:border-[#5e1f1b] transition-colors duration-200">
             <img src="{{ asset('images/icons/refresh-icon.png') }}" class="w-4 h-4" alt="Plus Icon">
             Refresh Data
         </div>
@@ -35,6 +35,17 @@
                     <th class="px-5 py-3">Last Login</th>
                     <th class="px-5 py-3">Status</th>
                     <th class="px-5 py-3 rounded-tr-xl">Actions</th>
+                </tr>
+                <!-- Search Inputs Row -->
+                <tr class="bg-[#F5F5F5] text-sm text-[#212121]">
+                    <th class="px-5 py-2 w-20"><input type="text" class="w-auto bg-white border border-gray-300 rounded px-2 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#BF360C]" placeholder="Search S/No" disabled></th>
+                    <th class="px-5 py-2"><input type="text" class="w-full bg-white border border-gray-300 rounded px-2 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#BF360C]" placeholder="Search Name"></th>
+                    <th class="px-5 py-2"><input type="text" class="w-full bg-white border border-gray-300 rounded px-2 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#BF360C]" placeholder="Search Username"></th>
+                    <th class="px-5 py-2"><input type="text" class="w-full bg-white border border-gray-300 rounded px-2 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#BF360C]" placeholder="Search Email"></th>
+                    <th class="px-5 py-2"><input type="text" class="w-full bg-white border border-gray-300 rounded px-2 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#BF360C]" placeholder="Search Mobile"></th>
+                    <th class="px-5 py-2"><input type="text" class="w-full bg-white border border-gray-300 rounded px-2 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#BF360C]" placeholder="Search Last Login"></th>
+                    <th class="px-5 py-2"><input type="text" class="w-full bg-white border border-gray-300 rounded px-2 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#BF360C]" placeholder="Search Status"></th>
+                    <th class="px-5 py-2"><input type="text" class="w-full bg-white border border-gray-300 rounded px-2 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#BF360C]" placeholder="-" disabled></th>
                 </tr>
             </thead>
             <tbody>
@@ -118,17 +129,41 @@
 
 {{-- Pagination --}}
 @if (!empty($pagination))
-<div class="mt-6">
-    <p>Page {{ $pagination['currentPage'] }} of {{ $pagination['pageCount'] }}</p>
+<div class="mt-8 flex flex-col items-center gap-4">
+    <div class="text-sm text-gray-700">
+        Page <span class="font-medium">{{ $pagination['currentPage'] }}</span> of <span
+            class="font-medium">{{ $pagination['pageCount'] }}</span>
+    </div>
 
-    <div class="flex gap-4 mt-2">
-        @if (!$pagination['isFirstPage'])
-        <a href="{{ route('admin.users', ['page' => $pagination['currentPage'] - 1]) }}" class="text-blue-600 hover:underline">← Previous</a>
-        @endif
+    <div class="inline-flex items-center space-x-2">
+        {{-- First Page --}}
+        <a href="{{ route('admin.users.requests', ['page' => 1, 'limit' => $pagination['perPage']]) }}"
+            class="px-3 py-1 text-sm rounded border bg-white hover:bg-gray-100 {{ $pagination['isFirstPage'] ? 'opacity-50 pointer-events-none' : '' }}">
+            « First
+        </a>
 
-        @if (!$pagination['isLastPage'])
-        <a href="{{ route('admin.users', ['page' => $pagination['currentPage'] + 1]) }}" class="text-blue-600 hover:underline">Next →</a>
-        @endif
+        {{-- Previous Page --}}
+        <a href="{{ route('admin.users.requests', ['page' => $pagination['currentPage'] - 1, 'limit' => $pagination['perPage']]) }}"
+            class="px-3 py-1 text-sm rounded border bg-white hover:bg-gray-100 {{ $pagination['isFirstPage'] ? 'opacity-50 pointer-events-none' : '' }}">
+            ‹ Prev
+        </a>
+
+        {{-- Current Page (active) --}}
+        <span class="px-3 py-1 text-sm rounded bg-[#BF360C] text-white font-semibold">
+            {{ $pagination['currentPage'] }}
+        </span>
+
+        {{-- Next Page --}}
+        <a href="{{ route('admin.users.requests', ['page' => $pagination['currentPage'] + 1, 'limit' => $pagination['perPage']]) }}"
+            class="px-3 py-1 text-sm rounded border bg-white hover:bg-gray-100 {{ $pagination['isLastPage'] ? 'opacity-50 pointer-events-none' : '' }}">
+            Next ›
+        </a>
+
+        {{-- Last Page --}}
+        <a href="{{ route('admin.users.requests', ['page' => $pagination['pageCount'], 'limit' => $pagination['perPage']]) }}"
+            class="px-3 py-1 text-sm rounded border bg-white hover:bg-gray-100 {{ $pagination['isLastPage'] ? 'opacity-50 pointer-events-none' : '' }}">
+            Last »
+        </a>
     </div>
 </div>
 @endif
@@ -157,16 +192,38 @@
                 <p id="modalEmail" class="font-semibold text-gray-900 break-all">-</p>
             </div>
             <div>
-                <p class="text-gray-600 font-medium">Mobile</p>
-                <p id="modalMobile" class="font-semibold text-gray-900">-</p>
+                <p class="text-gray-600 font-medium">Mobile No</p>
+                <div class="flex gap-4">
+                    <p id="modalMobile" class="font-semibold text-gray-900">-</p>
+                    <img id="modalIsWhatsapp" src="{{ asset('images/icons/whatsapp-icon.png') }}" class="w-6 h-6 hidden"
+                        alt="WhatsApp Icon">
+                    <img id="modalIsSignal" src="{{ asset('images/icons/message-icon.png') }}" class="w-6 h-6 hidden"
+                        alt="Signal Icon">
+                </div>
             </div>
             <div>
                 <p class="text-gray-600 font-medium">Address</p>
                 <p id="modalAddress" class="font-semibold text-gray-900">-</p>
             </div>
             <div>
-                <p class="text-gray-600 font-medium">Status</p>
-                <p id="modalStatus" class="font-semibold text-gray-900">-</p>
+                <p class="text-gray-600 font-medium">State</p>
+                <p id="modalState" class="font-semibold text-gray-900">-</p>
+            </div>
+            <div>
+                <p class="text-gray-600 font-medium">Country</p>
+                <p id="modalCountry" class="font-semibold text-gray-900">-</p>
+            </div>
+            <div>
+                <p class="text-gray-600 font-medium">Referrer Name</p>
+                <p id="modalReferrerName" class="font-semibold text-gray-900">-</p>
+            </div>
+            <div>
+                <p class="text-gray-600 font-medium">Referrer Email</p>
+                <p id="modalReferrerEmail" class="font-semibold text-gray-900 break-all">-</p>
+            </div>
+            <div>
+                <p class="text-gray-600 font-medium">Referrer Mobile No</p>
+                <p id="modalReferrerMobile" class="font-semibold text-gray-900">-</p>
             </div>
             <div>
                 <p class="text-gray-600 font-medium">Remarks</p>
@@ -175,6 +232,10 @@
             <div>
                 <p class="text-gray-600 font-medium">Created At</p>
                 <p id="modalCreatedAt" class="font-semibold text-gray-900">-</p>
+            </div>
+            <div>
+                <p class="text-gray-600 font-medium">Status</p>
+                <p id="modalStatus" class="font-semibold text-gray-900">-</p>
             </div>
         </div>
     </div>
@@ -185,17 +246,32 @@
 
     function openModal(user, showActions = true) {
         selectedUser = user;
+        const modalStatus = document.getElementById('modalStatus');
 
+        modalStatus.textContent = user.status;
+        modalStatus.className = 'font-semibold text-sm px-3 py-1 rounded-full ' +
+            (user.status === 'ACTIVE' ? 'bg-green-100 text-green-700 inline-block' : (user.status === 'REJECTED' ? 'bg-red-100 text-red-700 inline-block' :
+                'bg-yellow-100 text-yellow-800 inline-block'));
         document.getElementById('modalFirstName').innerText = user.firstName || '-';
         document.getElementById('modalLastName').innerText = user.lastName || '-';
         document.getElementById('modalEmail').innerText = user.emailId || '-';
         document.getElementById('modalMobile').innerText = user.mobileNo || '-';
         document.getElementById('modalAddress').innerText = user.address || '-';
-        document.getElementById('modalStatus').innerText = user.status || '-';
+        document.getElementById('modalState').innerText = user.admin0 || '-';
+        document.getElementById('modalCountry').innerText = user.admin1 || '-';
+        document.getElementById('modalReferrerName').innerText = user.referrerName || '-';
+        document.getElementById('modalReferrerEmail').innerText = user.referrerEmail || '-';
+        document.getElementById('modalReferrerMobile').innerText = user.referrerMobileNo || '-';
+        document.getElementById('modalIsWhatsapp')?.classList.toggle('hidden', !user.isWhatsapp);
+        document.getElementById('modalIsSignal')?.classList.toggle('hidden', !user.isSignal);
         document.getElementById('modalRemarks').innerText = user.remarks || '-';
         document.getElementById('modalCreatedAt').innerText = user.createdAt ?
-            new Date(user.createdAt).toLocaleString() :
-            '-';
+            new Date(user.createdAt).toLocaleDateString('en-GB', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            }) : '-';
+
 
         document.getElementById('userModal').classList.remove('hidden');
     }

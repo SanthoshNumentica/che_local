@@ -8,8 +8,7 @@ use Illuminate\Support\Str;
 <div class="flex items-center justify-between mb-4">
     <h1 class="text-[25px] font-medium mb-4">Manage Request Users</h1>
     <div class="flex">
-        <div
-            class="w-32 text-center text-sm rounded font-medium mb-2 p-2 mr-4 bg-white border border-[#7A2B26] flex items-center justify-center gap-1 cursor-pointer hover:bg-[#f3eae9] hover:border-[#5e1f1b] text-[#5e1f1b] transition-colors duration-200">
+        <div onclick="location.reload()" class="w-32 text-center text-sm rounded font-medium mb-2 p-2 mr-4 bg-white border border-[#7A2B26] flex items-center justify-center gap-1 cursor-pointer hover:bg-[#f3eae9] hover:border-[#5e1f1b] text-[#5e1f1b] transition-colors duration-200">
             <img src="{{ asset('images/icons/refresh-icon.png') }}" class="w-4 h-4" alt="Plus Icon">
             Refresh Data
         </div>
@@ -30,8 +29,8 @@ use Illuminate\Support\Str;
 <div class="overflow-x-auto custom-scrollbar rounded shadow">
     <div class="min-w-max">
         <table class="w-full divide-y divide-gray-200 text-sm text-gray-800">
-            <thead>
-                <tr class="bg-gradient-to-r from-[#BF360C] to-[#6D4C41] text-white uppercase text-xs text-left">
+            <thead class="bg-gradient-to-r from-[#BF360C] to-[#6D4C41] text-white uppercase text-xs text-left">
+                <tr>
                     <th class="px-5 py-3 rounded-tl-xl">S/No</th>
                     <th class="px-5 py-3">Name</th>
                     <th class="px-5 py-3">Email</th>
@@ -40,6 +39,17 @@ use Illuminate\Support\Str;
                     <th class="px-5 py-3">Status</th>
                     <th class="px-5 py-3">Created At</th>
                     <th class="px-5 py-3">Actions</th>
+                </tr>
+                <!-- Search Inputs Row -->
+                <tr class="bg-[#F5F5F5] text-sm text-[#212121]">
+                    <th class="px-5 py-2 w-30"><input type="text" class="w-full bg-white border border-gray-300 rounded px-2 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#BF360C]" placeholder="Search S/No" disabled></th>
+                    <th class="px-5 py-2"><input type="text" class="w-full bg-white border border-gray-300 rounded px-2 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#BF360C]" placeholder="Search Name"></th>
+                    <th class="px-5 py-2"><input type="text" class="w-full bg-white border border-gray-300 rounded px-2 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#BF360C]" placeholder="Search Email"></th>
+                    <th class="px-5 py-2"><input type="text" class="w-full bg-white border border-gray-300 rounded px-2 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#BF360C]" placeholder="Search Mobile No"></th>
+                    <th class="px-5 py-2"><input type="text" class="w-full bg-white border border-gray-300 rounded px-2 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#BF360C]" placeholder="Search Address"></th>
+                    <th class="px-5 py-2"><input type="text" class="w-full bg-white border border-gray-300 rounded px-2 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#BF360C]" placeholder="Search Status"></th>
+                    <th class="px-5 py-2"><input type="text" class="w-full bg-white border border-gray-300 rounded px-2 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#BF360C]" placeholder="Search Created At"></th>
+                    <th class="px-5 py-2"><input type="text" class="w-full bg-white border border-gray-300 rounded px-2 py-1 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#BF360C]" placeholder="-" disabled></th>
                 </tr>
             </thead>
             <tbody>
@@ -158,7 +168,10 @@ use Illuminate\Support\Str;
         </a>
     </div>
 </div>
+@else
+<p class="text-red-500">No users found or error in fetching data.</p>
 @endif
+@endsection
 
 {{-- Modal With Approve & Reject Buttons --}}
 <div id="userModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-60 flex items-center justify-center">
@@ -232,13 +245,21 @@ use Illuminate\Support\Str;
             @method('PATCH')
             <input type="hidden" name="status" id="status" value="">
             <div id="modalFooter" class="flex justify-end gap-4 border-t pt-4">
-                <button type="submit" onclick="setStatusAndSubmit(event, 'REJECTED')"
-                    class="bg-white border border-[#7A2B26] hover:bg-[#f3eae9] hover:border-[#5e1f1b] transition-colors duration-200 text-[#5e1f1b] font-medium px-4 py-2 rounded">
-                    Reject
+                <button type="submit" onclick="setStatusAndSubmit(event, 'REJECTED', this)"
+                    class="action-button flex items-center justify-center bg-white border border-[#7A2B26] hover:bg-[#f3eae9] hover:border-[#5e1f1b] transition-colors duration-200 text-[#5e1f1b] font-medium px-4 py-2 rounded">
+                    <svg class="hidden animate-spin h-5 w-5 mr-2 text-[#5e1f1b]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                    </svg>
+                    <span>Reject</span>
                 </button>
-                <button type="submit" onclick="setStatusAndSubmit(event, 'APPROVED')"
-                    class="bg-gradient-to-r from-[#BF360C] to-[#6D4C41] hover:from-[#943732] hover:to-[#4D322D] transition-colors duration-200 text-white font-medium px-4 py-2 rounded">
-                    Approve
+                <button type="submit" onclick="setStatusAndSubmit(event, 'APPROVED', this)"
+                    class="action-button flex items-center justify-center bg-gradient-to-r from-[#BF360C] to-[#6D4C41] hover:from-[#943732] hover:to-[#4D322D] transition-colors duration-200 text-white font-medium px-4 py-2 rounded">
+                    <svg class="hidden animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                    </svg>
+                    <span>Approve</span>
                 </button>
             </div>
         </form>
@@ -268,6 +289,9 @@ use Illuminate\Support\Str;
         document.getElementById('modalReferrerName').innerText = user.referrerName || '-';
         document.getElementById('modalReferrerEmail').innerText = user.referrerEmail || '-';
         document.getElementById('modalReferrerMobile').innerText = user.referrerMobileNo || '-';
+        document.getElementById('modalRemarks').innerText = user.remarks || '-';
+        document.getElementById('modalIsWhatsapp')?.classList.toggle('hidden', !user.isWhatsapp);
+        document.getElementById('modalIsSignal')?.classList.toggle('hidden', !user.isSignal);
         document.getElementById('modalCreatedAt').innerText = user.createdAt ?
             new Date(user.createdAt).toLocaleDateString('en-GB', {
                 day: 'numeric',
@@ -275,8 +299,6 @@ use Illuminate\Support\Str;
                 year: 'numeric'
             }) : '-';
 
-        document.getElementById('modalIsWhatsapp')?.classList.toggle('hidden', !user.isWhatsapp);
-        document.getElementById('modalIsSignal')?.classList.toggle('hidden', !user.isSignal);
 
         // Show or hide action buttons
         const footer = document.getElementById('modalFooter');
@@ -293,11 +315,30 @@ use Illuminate\Support\Str;
         document.getElementById('userModal').classList.add('hidden');
     }
 
-    function setStatusAndSubmit(event, statusValue) {
+    function setStatusAndSubmit(event, statusValue, button) {
         event.preventDefault();
+
+        // Disable both buttons and apply styles
+        const buttons = document.querySelectorAll('.action-button');
+        buttons.forEach(btn => {
+            btn.disabled = true;
+            btn.classList.add('opacity-60', 'cursor-not-allowed');
+        });
+
+        // Show loader and update text
+        const spinner = button.querySelector('svg');
+        const textSpan = button.querySelector('span');
+
+        if (spinner) spinner.classList.remove('hidden');
+        if (textSpan) textSpan.textContent = statusValue === 'APPROVED' ? 'Approving...' : 'Rejecting...';
+
+        const form = button.closest('form');
         document.getElementById('status').value = statusValue;
-        event.target.closest('form').submit();
-    }   
+        statusValue.value = status;
+
+        // Submit the form
+        form.submit();
+    }
 </script>
 
 <style>
@@ -317,4 +358,3 @@ use Illuminate\Support\Str;
         }
     }
 </style>
-@endsection

@@ -19,7 +19,7 @@
     @endphp
 
     <!-- Sidebar -->
-    <aside class="w-1/4 bg-white rounded-md flex flex-col m-2 p-4">
+    <aside class="w-[20%] bg-white rounded-md flex flex-col m-2 p-4">
         <!-- Logo -->
         <div class="flex items-center mb-8">
             <img src="{{ asset('images/test_logo.jpg') }}" alt="Logo" class="h-10 w-auto mx-auto">
@@ -99,7 +99,7 @@
 
     </aside>
 
-    <main class="w-3/4 flex flex-col p-4 bg-white rounded-md m-2 ml-0">
+    <main class="w-[80%] flex flex-col p-4 bg-white rounded-md m-2 ml-0">
 
         <!-- Header Bar -->
         <div class="flex items-center justify-between mb-6 border-b border-gray-200 pb-4">
