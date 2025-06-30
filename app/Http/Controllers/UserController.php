@@ -216,4 +216,42 @@ class UserController extends Controller
 
         return redirect()->route($redirectRoute)->with('success', $message);
     }
+
+    public function getUserData(Request $request)
+{
+    $token = Cache::get('api_token');
+
+    if (!$token) {
+        return response()->json([
+            'error' => 'Session expired. Please login again.'
+        ], 401);
+    }
+
+    $page = $request->input('page', 1);
+    $limit = $request->input('limit', 10);
+    $baseUrl = 'https://che.inheritinitiative.org/api/v1'; // Direct external API as per your request
+
+    $response = Http::withHeaders([
+        'Authorization' => "Bearer {$token}",
+        'Accept' => 'application/json',
+    ])->get("{$baseUrl}/auth/userList", [
+        'page' => $page,
+        'limit' => $limit,
+    ]);
+
+    if ($response->unauthorized()) {
+        return response()->json([
+            'error' => 'Unauthorized. Please login again.'
+        ], 401);
+    }
+
+    if ($response->failed()) {
+        return response()->json([
+            'error' => 'Failed to fetch user data.'
+        ], $response->status());
+    }
+
+    return response()->json($response->json());
+}
+
 }

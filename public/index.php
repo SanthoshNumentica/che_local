@@ -16,5 +16,7 @@ require __DIR__.'/../vendor/autoload.php';
 // Bootstrap Laravel and handle the request...
 /** @var Application $app */
 $app = require_once __DIR__.'/../bootstrap/app.php';
+error_reporting(E_ALL & ~E_DEPRECATED);
+
 
 $app->handleRequest(Request::capture());
