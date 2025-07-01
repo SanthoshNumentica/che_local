@@ -15,25 +15,32 @@
         @endforeach
     </div>
 
-    <!-- Table Partial -->
-    @php
-        $tableData = match($type) {
-            'growth' => $categories,
-            'project' => $projectCategories,
-            'stories' => $storiesCategories,
-            'training' => $trainingCategories,
-            default => []
-        };
-        $title = ucfirst($type) . ' Categories';
-    @endphp
-
-    @include('partials._category_table', [
-        'title' => $title,
-        'data' => $tableData,
-        'meta' => $meta,
-        'type' => $type,
-        'limit' => $limit,
-    ])
+    <!-- Content based on tab -->
+    @if ($type === 'growth')
+        @include('partials._category_table', [
+            'title' => 'Growth Categories',
+            'data' => $categories,
+            'meta' => $meta,
+        ])
+    @elseif ($type === 'project')
+        @include('partials._category_table', [
+            'title' => 'Project Categories',
+            'data' => $projectCategories,
+            'meta' => $meta,
+        ])
+    @elseif ($type === 'stories')
+        @include('partials._category_table', [
+            'title' => 'Stories Categories',
+            'data' => $storiesCategories,
+            'meta' => $meta,
+        ])
+    @elseif ($type === 'training')
+        @include('partials._category_table', [
+            'title' => 'Training Categories',
+            'data' => $trainingCategories,
+            'meta' => $meta,
+        ])
+    @endif
 
 </div>
 @endsection

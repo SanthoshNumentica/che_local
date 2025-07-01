@@ -43,6 +43,8 @@ class MasterDataController extends Controller
                 $response = Http::withToken($token)->get("{$this->baseUrl}{$endpoint}", [
                     'page' => $page,
                     'limit' => $limit,
+                    'sortBy' => 'createdAt',
+                    'sortOrder' => 'desc',
                 ]);
 
                 if ($response->ok()) {

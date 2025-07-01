@@ -9,9 +9,9 @@
 
 @if (count($data) > 0)
 
+    {{-- Page info --}}
     <div class="mb-2 text-sm text-gray-700">
-        Showing page {{ $meta['currentPage'] ?? 1 }} of {{ $meta['pageCount'] ?? 1 }} —
-        displaying {{ count($data) }} records
+        Showing page {{ $meta['currentPage'] ?? 1 }} of {{ $meta['pageCount'] ?? 1 }} — displaying {{ count($data) }} records
     </div>
 
     <div class="w-full overflow-x-auto rounded-xl shadow bg-white">
@@ -54,7 +54,7 @@
     </div>
 
     {{-- Pagination --}}
-    @if(isset($meta['pageCount']) && $meta['pageCount'] > 1)
+    @if(isset($meta) && isset($meta['pageCount']) && $meta['pageCount'] > 1)
         @php
             $currentPage = (int)($meta['currentPage'] ?? 1);
             $pageCount = (int)($meta['pageCount'] ?? 1);
@@ -64,7 +64,7 @@
 
         <div class="mt-4 flex justify-center items-center space-x-2">
             @if($hasPrev)
-                <a href="{{ route('admin.master-data', ['type' => $type, 'page' => $currentPage - 1, 'limit' => $limit]) }}"
+                <a href="{{ request()->fullUrlWithQuery(['page' => $currentPage - 1]) }}"
                     class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100 transition">
                     ← Previous
                 </a>
@@ -75,7 +75,7 @@
             </span>
 
             @if($hasNext)
-                <a href="{{ route('admin.master-data', ['type' => $type, 'page' => $currentPage + 1, 'limit' => $limit]) }}"
+                <a href="{{ request()->fullUrlWithQuery(['page' => $currentPage + 1]) }}"
                     class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100 transition">
                     Next →
                 </a>

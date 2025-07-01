@@ -14,7 +14,7 @@
 
     <div id="layoutContainer" class="flex h-screen w-full transition-all duration-300 ease-in-out">
         <!-- Sidebar -->
-        <aside id="sidebar" class="w-[10%] bg-white rounded-md flex flex-col m-2 p-4 transition-all duration-300 ease-in-out">
+        <aside id="sidebar" class="w-[15%] bg-white rounded-md flex flex-col m-2 p-4 transition-all duration-300 ease-in-out">
             <div class="flex items-center mb-8">
                 <img src="{{ asset('images/test_logo.jpg') }}" alt="Logo" class="h-10 w-auto mx-auto">
             </div>
@@ -68,12 +68,12 @@
             <div class="mt-auto text-xs text-center bg-gray-100 text-gray-700 rounded-md px-3 py-4 shadow-inner">
                 <p class="font-semibold text-sm text-[#5A1D1A]">ITOI Technologies</p>
                 <p class="text-[11px]">© 2025 All Rights Reserved</p>
-                <p class="text-[11px]">Version - <span class="font-medium">v10.39092</span></p>
+                <p class="text-[11px]">Version - <span class="font-medium">v0.1.1</span></p>
             </div>
         </aside>
 
         <!-- Main Content -->
-        <main id="mainContent" class="w-[90%] flex flex-col p-4 bg-white rounded-md m-2 ml-0 transition-all duration-300 ease-in-out">
+        <main id="mainContent" class="w-[85%] flex flex-col p-4 bg-white rounded-md m-2 ml-0 transition-all duration-300 ease-in-out">
             <div class="flex items-center justify-between mb-6 border-b border-gray-200 pb-4">
                 @if ($currentRoute !== 'admin.home')
                 <button onclick="history.back()" class="flex items-center space-x-2 text-[#7A2B26] hover:text-[#5A1D1A] font-medium">

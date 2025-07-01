@@ -20,3 +20,5 @@ Route::patch('/admin/users/approve/{id}', [UserController::class, 'approveUser']
 Route::get('/admin/map-maker', function () {return view('map');})->name('admin.map');
 Route::get('/admin/report', function () {return view('report');})->name('admin.report');Route::post('/logout', function () {session()->forget('user');session()->invalidate();session()->regenerateToken();return redirect('/admin/login');})->name('logout');
 Route::get('/admin/master-data', [MasterDataController::class, 'showMasterData'])->name('admin.master-data');
+Route::resource('categories', MasterDataController::class)->only(['index', 'edit', 'update', 'destroy']);
+
