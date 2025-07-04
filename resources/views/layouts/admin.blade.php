@@ -178,7 +178,7 @@
                     }
                 });
                 const data = await response.json();
-                const user = data?.result?.data?.find(u => u.userName === 'admin@gmail.com');
+                const user =  ?.result?.data?.find(u => u.userName === 'admin@gmail.com');
                 if (!user) return alert("No user found.");
                 document.getElementById("modalFirstName").textContent = user.firstName || '-';
                 document.getElementById("modalLastName").textContent = user.lastName || '-';
@@ -198,6 +198,7 @@
         function closeModal() {
             document.getElementById("userModal").classList.add("hidden");
         }
+        
     </script>
 
     <style>
