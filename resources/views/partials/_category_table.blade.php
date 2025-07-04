@@ -78,23 +78,7 @@
                 </td>
                 <td class="px-5 py-4 flex justify-center space-x-2">
 
-                    <!-- View -->
-                    <div class="relative group inline-block">
-                        <button onclick='openModal(@json($category), true)' class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded transition duration-200">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                            </svg>
-                        </button>
-                        <div
-                            class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition duration-200 pointer-events-none">
-                            View
-                        </div>
-                    </div>
-
+                    
                     <!-- Edit -->
 
                     <div class="relative group inline-block">
@@ -111,6 +95,24 @@
         Edit
     </div>
 </div>
+
+                              <!-- View -->
+                    <div class="relative group inline-block">
+                        <button onclick='openModal(@json($category), true)' class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded transition duration-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                        </button>
+                        <div
+                            class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition duration-200 pointer-events-none">
+                            View
+                        </div>
+                    </div>
+
 
                     <!-- Delete -->
                     <div class="relative group inline-block">
@@ -182,9 +184,6 @@
         <button onclick="closeEditModal()" class="absolute top-4 right-4 text-gray-400 hover:text-red-600 text-2xl">&times;</button>
         <h2 class="text-xl font-semibold mb-6 text-center border-b pb-3">Edit</h2>
 
-        <form id="editForm">
-            <input type="hidden" id="editId">
-
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700 mb-1">Category Name</label>
                 <input type="text" id="editName" required
@@ -200,7 +199,7 @@
             <div class="text-end">
                 <button type="submit" class="px-4 py-2 rounded bg-gradient-to-r from-[#BF360C] to-[#6D4C41] text-white hover:from-[#943732] hover:to-[#4D322D]">Update</button>    
             </div>
-        </form>
+        
     </div>
 </div>
 
@@ -214,6 +213,7 @@
         </button>
 
         <h2 class="text-lg font-semibold mb-4 mt-2">Are you sure you want to delete?</h2>
+        
         <div class="flex justify-center gap-4">
             <button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">Yes</button>
             <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">No</button>
@@ -262,7 +262,6 @@
 
     
     function openEditModal(category) {
-        document.getElementById('editId').value = category.id || '';
         document.getElementById('editName').value = category.categoryName || '';
         document.getElementById('editCreatedBy').value =
             category.createdByUser?.fullName ||
